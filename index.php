@@ -1,3 +1,11 @@
+<?php
+include_once('./include/connect.php');
+if ($DBerr == true){
+  header('location: databaseError.php');
+}
+
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -9,14 +17,9 @@
 </head>
 <body>
 
-<header>
-  <figure class="logo-placeholder">MBO<br>CINEMAS</figure>
-  <nav>
-    <a href="#">Films</a>
-    <a href="#">Agenda</a>
-    <a href="#">Info</a>
-  </nav>
-</header>
+<?php
+include_once('./include/header.php');
+?>
  
 <!-- top movie -->
 <section class="movie-hero">
@@ -74,91 +77,33 @@
   </div>
  
   <!-- movies list -->
+<?php
+require_once('./include/movie.php');
+$movies = Movie::getAll($conn);
+?>
+
 <ul class="movies-scroll">
+    <?php 
+    foreach ($movies as $movie): 
+    ?>
     <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="./images/movie_posters/fnaf2_Mangle_Poster.png" alt="FNAF 2" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">Five Nights at Freddy's 2</h2>
+        <figure class="movie-card-thumb">
+            <img
+                src="<?= htmlspecialchars($movie->posterPath ?? '') ?>"
+                alt="<?= htmlspecialchars($movie->posterAlt ?? $movie->title) ?>"
+                onerror="this.src='./images/placeholder.png';"
+            >
+        </figure>
+        <h2 class="movie-card-title"><?= htmlspecialchars($movie->title) ?></h2>
     </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="Sinners" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">Sinners</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="Mission Impossible" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">Mission: Impossible – The Final Reckoning</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="Thunderbolts" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">Thunderbolts*</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="A Minecraft Movie" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">A Minecraft Movie</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="The Accountant 2" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">The Accountant 2</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="Final Destination Bloodlines" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">Final Destination: Bloodlines</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="Warfare" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">Warfare</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="How to Train Your Dragon" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">How to Train Your Dragon</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="28 Years Later" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">28 Years Later</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="Jurassic World Rebirth" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">Jurassic World Rebirth</h2>
-    </li>
-    <li class="movie-card">
-      <figure class="movie-card-thumb">
-        <img src="" alt="Superman" onerror="this.src='./images/placeholder.png';">
-      </figure>
-      <h2 class="movie-card-title">Superman</h2>
-    </li>
-  </ul>
-</section>
+    <?php endforeach; ?>
+</ul>
  
 <div class="divider"></div>
  
-<footer>
-  <strong>Contact</strong>
-  071-6103029<br>
-  <a href="mailto:support@mbocinemas.nl">support@mbocinemas.nl</a><br>
-  Gortestraat 109, 2311 KC Leiden
-  <a id="mederwerker-link">mederwerker pagina</a>
-</footer>
+<?php
+include_once('./include/footer.php');
+?>
 
 <script src='./src/app.js' defer></script>
 </body>
