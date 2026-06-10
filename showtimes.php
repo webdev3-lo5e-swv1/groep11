@@ -1,0 +1,1 @@
+<?php session_start(); ?><!doctype html><html><body><h1>Zaalplanning</h1><p>Beheer vertoningen en zalen.</p></body></html>

@@ -4,24 +4,27 @@ require_once('./include/connect.php');
 class Movie
 {
     public string  $title;
+    public ?int $id;
     public ?string $posterPath;
     public ?string $posterAlt;
     public ?string $ageRating;
     public ?string $genre;
     public ?string $duration;
     public ?int    $year;
-    public ?string $synopsis;
+    public ?string $description;
 
     public function __construct(
         string  $title,
+        ?int    $id = null,
         ?string $posterPath = null,
         ?string $posterAlt  = null,
         ?string $ageRating  = null,
         ?string $genre      = null,
         ?string $duration   = null,
         ?int    $year       = null,
-        ?string $synopsis   = null
+        ?string $description   = null
     ) {
+        $this->id = $id;
         $this->title      = $title;
         $this->posterPath = $posterPath;
         $this->posterAlt  = $posterAlt;
@@ -29,21 +32,21 @@ class Movie
         $this->genre      = $genre;
         $this->duration   = $duration;
         $this->year       = $year;
-        $this->synopsis   = $synopsis;
+        $this->description   = $description;
     }
 
     public function save(PDO $conn): int|false
     {
         $sql = "INSERT INTO movies
-                    (title, poster_path, poster_alt, age_rating, genre, duration, year, synopsis)
-                VALUES (:title, :posterPath, :posterAlt, :ageRating, :genre, :duration, :year, :synopsis)";
+                    (title, poster_path, poster_alt, age_rating, genre, duration, year, description)
+                VALUES (:title, :posterPath, :posterAlt, :ageRating, :genre, :duration, :year, :description)";
 
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
             error_log("Prepare failed");
             return false;
-        }
+        };
 
         $stmt->execute([
             ':title'      => $this->title,
@@ -53,7 +56,7 @@ class Movie
             ':genre'      => $this->genre,
             ':duration'   => $this->duration,
             ':year'       => $this->year,
-            ':synopsis'   => $this->synopsis,
+            ':description'   => $this->description,
         ]);
 
         return (int) $conn->lastInsertId();
@@ -68,7 +71,7 @@ class Movie
     $genre      = htmlspecialchars($this->genre      ?? '');
     $duration   = htmlspecialchars($this->duration   ?? '');
     $year       = htmlspecialchars((string)($this->year ?? ''));
-    $synopsis   = htmlspecialchars($this->synopsis   ?? '');
+    $description   = htmlspecialchars($this->description   ?? '');
 
     return <<<HTML
     <article class="movie-inner">
@@ -83,7 +86,7 @@ class Movie
                 <li><span class="badge">{$duration}</span></li>
                 <li><span class="badge">{$year}</span></li>
             </ul>
-            <p class="synopsis">{$synopsis}</p>
+            <p class="description">{$description}</p>
         </section>
     </article>
     HTML;
@@ -100,6 +103,7 @@ class Movie
         $movies = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $movies[] = new self(
+                id:         (int)$row['id'],
                 title:      $row['title'],
                 posterPath: $row['poster_path'],
                 posterAlt:  $row['poster_alt'],
@@ -107,10 +111,20 @@ class Movie
                 genre:      $row['genre'],
                 duration:   $row['duration'],
                 year:       $row['year'] !== null ? (int)$row['year'] : null,
-                synopsis:   $row['synopsis']
+                description:$row['description']
             );
         }
 
         return $movies;
+    }
+    public static function delete(PDO $conn, int $id): bool
+    {
+        $stmt = $conn->prepare(
+            "DELETE FROM movies WHERE id = :id"
+        );
+
+        return $stmt->execute([
+            ':id' => $id
+        ]);
     }
 }

@@ -363,3 +363,346 @@ footer a:hover {
 #mederwerker-link{
     margin-left: 10vw;
 }
+
+.movie-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+
+    background:#000000cc;
+
+    backdrop-filter:blur(6px);
+
+    z-index:9999;
+}
+
+.movie-modal.show{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.movie-modal-content{
+
+    width:900px;
+    max-width:90%;
+
+    background:linear-gradient(
+        180deg,
+        #0d1b3e,
+        #081428
+    );
+
+    border:1px solid var(--gold);
+
+    border-radius:20px;
+
+    padding:30px;
+
+    color:var(--text);
+
+    position:relative;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.6),
+        0 0 30px rgba(232,184,75,.15);
+}
+.movie-modal-content img{
+    width:200px;
+}
+
+.movie-modal-body{
+    display:flex;
+    gap:30px;
+}
+
+.movie-modal-body img{
+    width:280px;
+    border-radius:12px;
+    object-fit:cover;
+}
+
+#modalTitle{
+    color:var(--gold);
+
+    font-family:'Bebas Neue',sans-serif;
+
+    font-size:48px;
+
+    letter-spacing:.04em;
+
+    margin-bottom:10px;
+}
+
+#modalShowtimes{
+    margin-top:20px;
+}
+
+.time-btn{
+
+    background:#13265a;
+
+    color:var(--text);
+
+    border:1px solid var(--gold);
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    margin:5px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.time-btn:hover{
+    background:var(--gold);
+
+    color:#081428;
+}
+
+#closeModal{
+
+    position:absolute;
+
+    top:15px;
+    right:15px;
+
+    width:40px;
+    height:40px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#13265a;
+
+    color:var(--text);
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+#closeModal:hover{
+    background:#b91c1c;
+}
+
+#showTicketsBtn{
+
+    background:var(--gold);
+
+    color:#081428;
+
+    border:none;
+
+    padding:14px 24px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+#showTicketsBtn:hover{
+    background:var(--gold-dark);
+
+    transform:translateY(-2px);
+}
+
+#movieSearch{
+    width:100%;
+    padding:14px 18px;
+    border-radius:12px;
+    border:1px solid #1c2f68;
+    background:#0d1b3e;
+    color:var(--text);
+    font-size:16px;
+    margin-bottom:25px;
+}
+
+#movieSearch:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow:0 0 15px rgba(232,184,75,.3);
+}
+
+#movieList{
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+
+.movieItem{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:rgba(20,35,80,.65);
+
+    border:1px solid #1c2f68;
+
+    padding:18px 24px;
+    margin-bottom:14px;
+
+    border-radius:14px;
+
+    transition:.2s;
+}
+
+.movieItem:hover{
+    border-color:var(--gold);
+    transform:translateY(-2px);
+
+    box-shadow:0 0 20px rgba(232,184,75,.15);
+}
+
+.movieInfo{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.movieId{
+    background:#0a0f2e;
+
+    color:var(--gold);
+
+    border:1px solid var(--gold);
+
+    padding:8px 14px;
+
+    border-radius:10px;
+
+    font-weight:700;
+
+    min-width:70px;
+
+    text-align:center;
+}
+
+.movieTitle{
+    color:var(--text);
+
+    font-size:18px;
+
+    font-weight:600;
+}
+
+.deleteBtn{
+    background:#b91c1c;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    transition:.2s;
+}
+
+.deleteBtn:hover{
+    background:#dc2626;
+
+    transform:translateY(-1px);
+
+    box-shadow:0 0 15px rgba(220,38,38,.4);
+}
+
+.deleteBtn:active{
+    transform:scale(.97);
+}
+
+.employee-form{
+    background:rgba(20,35,80,.65);
+    border:1px solid #1c2f68;
+    border-radius:18px;
+    padding:30px;
+    margin-bottom:40px;
+    backdrop-filter:blur(8px);
+}
+
+.employee-form h2{
+    color:var(--gold);
+    margin-bottom:20px;
+}
+
+.employee-form label{
+    display:block;
+    color:var(--text);
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.employee-form input,
+.employee-form textarea,
+.employee-form select{
+    width:100%;
+
+    background:#0d1b3e;
+
+    border:1px solid #1c2f68;
+
+    color:var(--text);
+
+    padding:14px;
+
+    border-radius:12px;
+
+    margin-bottom:18px;
+
+    transition:.2s;
+}
+
+.employee-form input:focus,
+.employee-form textarea:focus,
+.employee-form select:focus{
+    outline:none;
+
+    border-color:var(--gold);
+
+    box-shadow:0 0 15px rgba(232,184,75,.25);
+}
+
+.employee-form textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.saveMovieBtn{
+    background:var(--gold);
+
+    color:#081428;
+
+    border:none;
+
+    padding:14px 24px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.saveMovieBtn:hover{
+    background:var(--gold-dark);
+
+    transform:translateY(-2px);
+
+    box-shadow:0 0 20px rgba(232,184,75,.3);
+}
+

@@ -25,7 +25,7 @@ include_once('./include/header.php');
 <section class="movie-hero">
   <article class="movie-inner">
     <figure class="poster">
-      <img src="./images/movie_posters/fnaf2_Mangle_Poster.png"
+      <img src="./images/movie_posters/five nights at freddy's 2.png"
            alt="Five Nights at Freddy's 2 poster"
            onerror="this.style.display='none'">
     </figure>
@@ -37,7 +37,7 @@ include_once('./include/header.php');
         <li><span class="badge">1u 54m</span></li>
         <li><span class="badge">2025</span></li>
       </ul>
-      <p class="synopsis">Een nieuwe beveiliger begint zijn eerste nacht in Freddy Fazbear's Pizza, waar de animatronics vrijer ronddwalen dan ooit tevoren. Overleven is geen optie — het is een verplichting.</p>
+      <p class="description">Een nieuwe beveiliger begint zijn eerste nacht in Freddy Fazbear's Pizza, waar de animatronics vrijer ronddwalen dan ooit tevoren. Overleven is geen optie — het is een verplichting.</p>
     </section>
   </article>
 </section>
@@ -86,7 +86,14 @@ $movies = Movie::getAll($conn);
     <?php 
     foreach ($movies as $movie): 
     ?>
-    <li class="movie-card">
+    <li class="movie-card"
+    data-title="<?= htmlspecialchars($movie->title) ?>"
+    data-poster="<?= htmlspecialchars($movie->posterPath ?? '') ?>"
+    data-age="<?= htmlspecialchars($movie->ageRating ?? '') ?>"
+    data-genre="<?= htmlspecialchars($movie->genre ?? '') ?>"
+    data-duration="<?= htmlspecialchars($movie->duration ?? '') ?>"
+    data-year="<?= htmlspecialchars($movie->year ?? '') ?>"
+    data-description="<?= htmlspecialchars($movie->description ?? '') ?>">
         <figure class="movie-card-thumb">
             <img
                 src="<?= htmlspecialchars($movie->posterPath ?? '') ?>"
@@ -100,7 +107,33 @@ $movies = Movie::getAll($conn);
 </ul>
  
 <div class="divider"></div>
- 
+  
+  <div id="movieModal" class="movie-modal">
+      <div class="movie-modal-content">
+
+          <button id="closeModal">✖</button>
+
+          <img id="modalPoster" src="" alt="">
+
+          <h2 id="modalTitle"></h2>
+
+          <p id="modalDescription"></p>
+
+          <div id="modalMeta"></div>
+
+          <button id="showTicketsBtn">
+              Ticket boeken
+          </button>
+
+          <div id="modalShowtimes" style="display:none;">
+              <button class="time-btn">13:15</button>
+              <button class="time-btn">15:45</button>
+              <button class="time-btn">18:00</button>
+              <button class="time-btn">20:30</button>
+          </div>
+
+      </div>
+  </div>
 <?php
 include_once('./include/footer.php');
 ?>

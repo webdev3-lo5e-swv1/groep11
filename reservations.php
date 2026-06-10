@@ -1,0 +1,1 @@
+<?php session_start(); ?><!doctype html><html><body><h1>Mijn reserveringen</h1><p>Bekijk, wijzig en annuleer reserveringen.</p></body></html>

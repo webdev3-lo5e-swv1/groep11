@@ -1,0 +1,1 @@
+<?php session_start(); ?><!doctype html><html><body><h1>Bioscopen</h1><p>Overzicht locaties.</p></body></html>
