@@ -1,14 +1,14 @@
 <?php
+require_once __DIR__ . '/Model.php';
 
-class Reservation
+class Reservation extends Model
 {
-    public ?int    $id;
-    public int     $user_id;
-    public int     $movie_id;
-    public ?int    $showtime_id;
-    public ?string $showtime_text;
-    public int     $tickets;
-    public string  $status;
+    private int     $user_id;
+    private int     $movie_id;
+    private ?int    $showtime_id;
+    private ?string $showtime_text;
+    private int     $tickets;
+    private string  $status;
 
     public function __construct(
         int     $user_id,
@@ -28,14 +28,23 @@ class Reservation
         $this->status        = $status;
     }
 
+    // ── Getters ──────────────────────────────────────────────────────────────
+    public function getUserId():      int     { return $this->user_id; }
+    public function getMovieId():     int     { return $this->movie_id; }
+    public function getShowtimeId():  ?int    { return $this->showtime_id; }
+    public function getShowtimeText():?string { return $this->showtime_text; }
+    public function getTickets():     int     { return $this->tickets; }
+    public function getStatus():      string  { return $this->status; }
+
+    // ── CRUD ─────────────────────────────────────────────────────────────────
     public function save(PDO $conn): int|false
     {
-        $sql = "INSERT INTO reservations
-                    (user_id, movie_id, showtime_id, showtime_text, tickets, status)
-                VALUES
-                    (:user_id, :movie_id, :showtime_id, :showtime_text, :tickets, :status)";
-
-        $stmt = $conn->prepare($sql);
+        $stmt = $conn->prepare("
+            INSERT INTO reservations
+                (user_id, movie_id, showtime_id, showtime_text, tickets, status)
+            VALUES
+                (:user_id, :movie_id, :showtime_id, :showtime_text, :tickets, :status)
+        ");
         $stmt->execute([
             ':user_id'       => $this->user_id,
             ':movie_id'      => $this->movie_id,
@@ -44,7 +53,6 @@ class Reservation
             ':tickets'       => $this->tickets,
             ':status'        => $this->status,
         ]);
-
         return (int) $conn->lastInsertId();
     }
 
@@ -65,7 +73,7 @@ class Reservation
 
     public static function getAll(PDO $conn): array
     {
-        $stmt = $conn->query("
+        $stmt = $conn->prepare("
             SELECT r.*, m.title, u.username,
                    COALESCE(s.start_time, r.showtime_text) AS display_time
             FROM reservations r
@@ -74,6 +82,7 @@ class Reservation
             LEFT JOIN showtimes s ON r.showtime_id = s.id
             ORDER BY r.id DESC
         ");
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

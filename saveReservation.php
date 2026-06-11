@@ -1,83 +1,55 @@
 <?php
 session_start();
-include_once('./include/connect.php');
-if ($DBerr == true) {
-    header('location: databaseError.php');
-    exit;
-}
+include_once './include/connect.php';
+if ($DBerr) { header('location: databaseError.php'); exit; }
+if (!isset($_SESSION['user_id'])) { header('Location: login.php'); exit; }
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
-}
-
-require_once('./include/Reservation.php');
-require_once('./include/movie.php');
+require_once './include/Reservation.php';
+require_once './include/movie.php';
 
 $errors        = [];
 $success       = false;
 $reservationId = null;
 $movieTitle    = '';
 $ticketCount   = 0;
-$showtime      = '';
+$showtimeText  = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $movie_name = trim($_POST['movie']   ?? '');
-    $time       = trim($_POST['time']    ?? '');
-    $ticketsRaw = trim($_POST['tickets'] ?? '');
-    $user_id    = (int) $_SESSION['user_id'];
+    $movie_id_raw    = trim($_POST['movie_id']      ?? '');
+    $showtime_id_raw = trim($_POST['showtime_id']   ?? '');
+    $showtime_text   = trim($_POST['showtime_text'] ?? '');
+    $ticketsRaw      = trim($_POST['tickets']        ?? '');
+    $user_id         = (int) $_SESSION['user_id'];
 
     // Validatie
-    if ($movie_name === '') {
-        $errors[] = 'Filmtitel ontbreekt.';
-    }
-    $ticketsInt = filter_var($ticketsRaw, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 10]]);
-    if ($ticketsInt === false) {
-        $errors[] = 'Aantal tickets moet een getal tussen 1 en 10 zijn.';
-    }
+    $movie_id    = filter_var($movie_id_raw, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+    $showtime_id = filter_var($showtime_id_raw, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+    $ticketsInt  = filter_var($ticketsRaw, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 10]]);
+
+    if (!$movie_id)   $errors[] = 'Geen film geselecteerd.';
+    if (!$showtime_id) $errors[] = 'Geen tijdstip geselecteerd.';
+    if ($ticketsInt === false) $errors[] = 'Aantal tickets moet tussen 1 en 10 zijn.';
 
     if (empty($errors)) {
-        // Zoek film op naam (case-insensitive)
-        $stmt = $conn->prepare("SELECT id, title FROM movies WHERE LOWER(title) = LOWER(:title) LIMIT 1");
-        $stmt->execute([':title' => $movie_name]);
-        $movie = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // Fallback: LIKE
+        // Haal filmtitel op via ID
+        $movie = Movie::getById($conn, $movie_id);
         if (!$movie) {
-            $stmt2 = $conn->prepare("SELECT id, title FROM movies WHERE title LIKE :title LIMIT 1");
-            $stmt2->execute([':title' => '%' . $movie_name . '%']);
-            $movie = $stmt2->fetch(PDO::FETCH_ASSOC);
-        }
-
-        if (!$movie) {
-            $errors[] = 'Film niet gevonden in de database.';
+            $errors[] = 'Film niet gevonden.';
         } else {
-            $movie_id    = (int) $movie['id'];
-            $movieTitle  = $movie['title'];
-            $ticketCount = $ticketsInt;
-            $showtime    = $time;
+            $movieTitle   = $movie->getTitle();
+            $ticketCount  = $ticketsInt;
+            $showtimeText = $showtime_text;
 
-            // Probeer een showtime_id te vinden (optioneel)
-            $showtime_id = null;
-            if (!empty($time)) {
-                $stmtS = $conn->prepare("
-                    SELECT id FROM showtimes
-                    WHERE movie_id = :mid
-                    ORDER BY ABS(UNIX_TIMESTAMP(start_time) - UNIX_TIMESTAMP(NOW()))
-                    LIMIT 1
-                ");
-                $stmtS->execute([':mid' => $movie_id]);
-                $st = $stmtS->fetch(PDO::FETCH_ASSOC);
-                if ($st) $showtime_id = (int) $st['id'];
-            }
+            // Haal start_time op voor weergave
+            $stmtS = $conn->prepare("SELECT DATE_FORMAT(start_time,'%H:%i') AS t FROM showtimes WHERE id = :id");
+            $stmtS->execute([':id' => $showtime_id]);
+            $stRow = $stmtS->fetch(PDO::FETCH_ASSOC);
+            if ($stRow) $showtimeText = $stRow['t'];
 
-            // Sla het tijdstip altijd op als tekst, ongeacht showtime_id
-            $showtime_text = $time !== '' ? $time : null;
-
-            $reservation   = new Reservation($user_id, $movie_id, $ticketsInt, $showtime_id, $showtime_text);
+            $reservation   = new Reservation($user_id, $movie_id, $ticketsInt, $showtime_id, $showtimeText);
             $reservationId = $reservation->save($conn);
 
-            if ($reservationId !== false && $reservationId > 0) {
+            if ($reservationId > 0) {
                 $success = true;
             } else {
                 $errors[] = 'Reservering opslaan mislukt. Probeer opnieuw.';
@@ -96,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="./style/style.css">
 </head>
 <body>
-<?php include_once('./include/header.php'); ?>
+<?php include_once './include/header.php'; ?>
 
 <main class="confirm-wrap">
 <?php if ($success): ?>
@@ -104,11 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1>✅ Reservering bevestigd!</h1>
         <p><strong>Reserveringsnummer:</strong> #<?= $reservationId ?></p>
         <p><strong>Film:</strong> <?= htmlspecialchars($movieTitle) ?></p>
+        <p><strong>Tijdstip:</strong> <?= htmlspecialchars($showtimeText) ?></p>
         <p><strong>Aantal tickets:</strong> <?= $ticketCount ?></p>
-        <?php if ($showtime): ?>
-        <p><strong>Tijdstip:</strong> <?= htmlspecialchars($showtime) ?></p>
-        <?php endif; ?>
-        <p>Een bevestiging is opgeslagen in je account.</p>
+        <p style="color:#aaa;font-size:.9rem;">Een bevestiging is opgeslagen in je account.</p>
         <div class="confirm-actions">
             <a href="reservations.php" class="btn-ticket">Mijn reserveringen</a>
             <a href="index.php" class="btn-ticket btn-ticket-secondary">Terug naar home</a>
@@ -126,6 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php endif; ?>
 </main>
 
-<?php include_once('./include/footer.php'); ?>
+<?php include_once './include/footer.php'; ?>
 </body>
 </html>

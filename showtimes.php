@@ -113,7 +113,7 @@ $showtimes = $showStmt ? $showStmt->fetchAll(PDO::FETCH_ASSOC) : [];
         </label>
         <label>
             Begintijd *
-            <input type="datetime-local" name="start_time" required>
+            <input type="datetime-local" name="start_time" min="2025-01-01T00:00" max="2030-12-31T23:59" required>
         </label>
         <button type="submit" class="saveMovieBtn">Inplannen</button>
     </form>

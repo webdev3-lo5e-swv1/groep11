@@ -106,6 +106,7 @@ sort($genres);
 <ul class="movies-scroll" id="movieGrid">
     <?php foreach ($movies as $movie): ?>
     <li class="movie-card"
+        data-id="<?= $movie->id ?>"
         data-title="<?= htmlspecialchars($movie->title) ?>"
         data-poster="<?= htmlspecialchars($movie->posterPath ?? '') ?>"
         data-age="<?= htmlspecialchars($movie->ageRating ?? '') ?>"
@@ -150,6 +151,6 @@ sort($genres);
 </div>
 
 <?php include_once('./include/footer.php'); ?>
-<script src='./src/app.js' defer></script>
+<script type="module" src="./src/app.js"></script>
 </body>
 </html>
