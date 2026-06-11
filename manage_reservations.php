@@ -59,7 +59,7 @@ $reservations = Reservation::getAll($conn);
                 <td><?= htmlspecialchars($r['title']) ?></td>
                 <td><?= $r['display_time'] ? htmlspecialchars($r['display_time']) : '–' ?></td>
                 <td><?= $r['tickets'] ?></td>
-                <td><?= $r['status'] === 'active' ? '✅ Actief' : '❌ Geannuleerd' ?></td>
+                <td><?= $r['status'] === 'active' ? 'Actief' : 'Geannuleerd' ?></td>
                 <td>
                 <?php if ($r['status'] === 'active'): ?>
                     <form method="POST" style="display:inline;">

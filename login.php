@@ -16,6 +16,7 @@ session_start();
 <link rel="stylesheet" href="./style/style.css">
 </head>
 <body>
+    <?php include_once('./include/header.php'); ?>
 <form method="POST">
 
     <input

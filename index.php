@@ -50,12 +50,12 @@ sort($genres);
 </section>
 
 <section class="ticket-wrap">
-  <button class="btn-ticket" onclick="document.getElementById('showtimes').classList.toggle('visible')">
+  <button class="btn-ticket" onclick="goToReserve('five nights at freddy\'s 2')">
     koop ticket
   </button>
 </section>
 
-<section class="showtimes" id="showtimes">
+<!-- <section class="showtimes" id="showtimes">
   <time class="showtime-date">Vandaag</time>
   <ul class="times-grid">
     <li><button class="time-btn" onclick="goToReserve('five nights at freddy\'s 2','13:15')">13:15</button></li>
@@ -64,7 +64,7 @@ sort($genres);
     <li><button class="time-btn" onclick="goToReserve('five nights at freddy\'s 2','20:30')">20:30</button></li>
     <li><button class="time-btn" onclick="goToReserve('five nights at freddy\'s 2','22:50')">22:50</button></li>
   </ul>
-</section>
+</section> -->
 
 <hr class="divider">
 
@@ -140,10 +140,6 @@ sort($genres);
                 <button id="showTicketsBtn">Ticket boeken</button>
                 <div id="modalShowtimes" style="display:none;">
                     <p class="showtimes-label">Kies een tijdstip:</p>
-                    <button class="time-btn modal-time" data-time="13:15">13:15</button>
-                    <button class="time-btn modal-time" data-time="15:45">15:45</button>
-                    <button class="time-btn modal-time" data-time="18:00">18:00</button>
-                    <button class="time-btn modal-time" data-time="20:30">20:30</button>
                 </div>
             </div>
         </div>

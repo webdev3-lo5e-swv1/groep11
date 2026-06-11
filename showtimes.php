@@ -15,6 +15,17 @@ require_once('./include/movie.php');
 
 $msg = '';
 $errors = [];
+if (isset($_GET['msg'])) {
+    switch ($_GET['msg']) {
+        case 'planned':
+            $msg = 'Vertoning ingepland!';
+            break;
+
+        case 'deleted':
+            $msg = 'Vertoning verwijderd.';
+            break;
+    }
+}
 
 // Film aan zaal plannen
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plan_movie'])) {
@@ -36,7 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plan_movie'])) {
             ':hall_id'    => $hall_id,
             ':start_time' => $start_time,
         ]);
-        $msg = 'Vertoning ingepland!';
+
+        header('Location: showtimes.php?msg=planned');
+        exit;
     }
 }
 
@@ -45,7 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_showtime'])) {
     $id = (int) $_POST['delete_showtime'];
     $stmt = $conn->prepare("DELETE FROM showtimes WHERE id = :id");
     $stmt->execute([':id' => $id]);
-    $msg = 'Vertoning verwijderd.';
+
+    header('Location: showtimes.php?msg=deleted');
+    exit;
 }
 
 $movies   = Movie::getAll($conn);

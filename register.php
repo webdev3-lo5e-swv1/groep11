@@ -15,6 +15,7 @@ session_start();
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./style/style.css">
 </head>
+<?php include_once('./include/header.php'); ?>
 <body>
 <form method="POST">
 

@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main class="confirm-wrap">
 <?php if ($success): ?>
     <div class="confirm-box success">
-        <h1>✅ Reservering bevestigd!</h1>
+        <h1>Reservering bevestigd!</h1>
         <p><strong>Reserveringsnummer:</strong> #<?= $reservationId ?></p>
         <p><strong>Film:</strong> <?= htmlspecialchars($movieTitle) ?></p>
         <p><strong>Tijdstip:</strong> <?= htmlspecialchars($showtimeText) ?></p>
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script>localStorage.removeItem('pendingReservation');</script>
 <?php else: ?>
     <div class="confirm-box error">
-        <h1>❌ Er ging iets mis</h1>
+        <h1>Er ging iets mis</h1>
         <?php foreach ($errors as $e): ?>
             <p style="color:#e63946;"><?= htmlspecialchars($e) ?></p>
         <?php endforeach; ?>
