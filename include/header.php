@@ -1,5 +1,7 @@
 <header>
-  <a href="index.php"><figure class="logo-placeholder logo">MBO<br>CINEMAS</figure></a>
+    <a href="index.php" class="logo">
+        <img class='logo_img' src="./images/logo.png" alt="MBO CINEMAS">
+    </a>
     <nav>
         <a href="index.php">Home</a>
         <a href="cinemas.php">Bioscopen</a>

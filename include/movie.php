@@ -1,6 +1,4 @@
 <?php
-require_once('./include/connect.php');
-
 class Movie
 {
     public string  $title;

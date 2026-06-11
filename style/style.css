@@ -37,6 +37,13 @@ header {
     color: white;
 }
 
+.logo_img{
+    margin: 0vw;
+    padding: 0vw;
+    width: 5vw;
+    height: 5vw;
+}
+
 nav {
     display: flex;
     gap: 28px;
@@ -383,29 +390,17 @@ footer a:hover {
 }
 
 .movie-modal-content{
-
     width:900px;
-    max-width:90%;
-
-    background:linear-gradient(
-        180deg,
-        #0d1b3e,
-        #081428
-    );
-
+    max-width:92vw;
+    max-height:88vh;
+    overflow-y:auto;
+    background:linear-gradient(180deg,#0d1b3e,#081428);
     border:1px solid var(--gold);
-
     border-radius:20px;
-
-    padding:30px;
-
+    padding:55px 30px 30px;
     color:var(--text);
-
     position:relative;
-
-    box-shadow:
-        0 0 40px rgba(0,0,0,.6),
-        0 0 30px rgba(232,184,75,.15);
+    box-shadow:0 0 40px rgba(0,0,0,.6),0 0 30px rgba(232,184,75,.15);
 }
 .movie-modal-content img{
     width:200px;
@@ -435,7 +430,10 @@ footer a:hover {
 }
 
 #modalShowtimes{
-    margin-top:20px;
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid rgba(255,255,255,.15);
+    clear:both;
 }
 
 .time-btn{
@@ -706,3 +704,156 @@ footer a:hover {
     box-shadow:0 0 20px rgba(232,184,75,.3);
 }
 
+
+/* ═══════════════════════════════════════════════════════════
+   Aanvullende stijlen — reserveringen, filters, bioscopen
+   ═══════════════════════════════════════════════════════════ */
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  padding: .75rem 1.5rem;
+  background: #1a1a2e;
+}
+.genre-bar { display: flex; align-items: center; gap: .5rem; color: #eee; }
+.genre-bar select {
+  background: #0f0f1a;
+  color: #eee;
+  border: 1px solid #444;
+  padding: .3rem .6rem;
+  border-radius: 4px;
+}
+.search-bar-wrap input {
+  background: #0f0f1a;
+  color: #eee;
+  border: 1px solid #444;
+  padding: .35rem .75rem;
+  border-radius: 4px;
+  width: 200px;
+}
+
+/* Reserveringen tabel */
+.reservations-wrap { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+.res-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+.res-table th, .res-table td {
+  padding: .6rem .9rem;
+  border: 1px solid #333;
+  text-align: left;
+  font-size: .9rem;
+}
+.res-table th { background: #1a1a2e; color: #eee; }
+.res-table tr:nth-child(even) { background: #111; }
+.cancelled-row { opacity: .5; text-decoration: line-through; }
+.res-message {
+  background: #1a3a1a;
+  color: #5f5;
+  border: 1px solid #3a7a3a;
+  padding: .6rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+/* Kleine knoppen */
+.btn-small {
+  background: #e63946;
+  color: #fff;
+  border: none;
+  padding: .3rem .7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: .82rem;
+  margin: .1rem;
+}
+.btn-small:hover { background: #c1121f; }
+.btn-danger { background: #555; }
+.btn-danger:hover { background: #333; }
+
+/* Bioscopen overzicht */
+.cinemas-wrap { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+.cinemas-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
+.cinema-card { background: #1a1a2e; border-radius: 8px; padding: 1.25rem; }
+.cinema-card h2 { font-size: 1.1rem; margin: 0 0 .4rem; }
+
+/* Bevestigingspagina */
+.confirm-wrap { max-width: 600px; margin: 3rem auto; padding: 0 1rem; }
+.confirm-box { background: #1a1a2e; border-radius: 8px; padding: 2rem; }
+.confirm-box.success { border-left: 4px solid #5f5; }
+.confirm-box.error   { border-left: 4px solid #e63946; }
+
+/* Reservering aanmaken */
+.reservation-wrap { max-width: 540px; margin: 2rem auto; padding: 0 1rem; }
+.reservation-wrap label { display: block; margin-bottom: 1rem; font-size: .95rem; }
+.reservation-wrap input, .reservation-wrap select {
+  display: block;
+  width: 100%;
+  margin-top: .3rem;
+  background: #0f0f1a;
+  color: #eee;
+  border: 1px solid #444;
+  padding: .45rem .7rem;
+  border-radius: 4px;
+}
+.field-error { display: block; color: #e63946; font-size: .8rem; margin-top: .2rem; }
+.input-error { border-color: #e63946 !important; }
+.total-price { font-weight: 700; font-size: 1.1rem; margin: .5rem 0 1rem; }
+
+/* Medewerker form */
+.employee-form { display: flex; flex-direction: column; gap: .75rem; max-width: 480px; }
+.employee-form label { font-size: .95rem; }
+.employee-form input, .employee-form select, .employee-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: .25rem;
+  background: #0f0f1a;
+  color: #eee;
+  border: 1px solid #444;
+  padding: .45rem .7rem;
+  border-radius: 4px;
+}
+
+/* Modal layout fix */
+.modal-body {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+.modal-poster-img {
+    width: 180px;
+    min-width: 180px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+.modal-info {
+    flex: 1;
+    min-width: 0;
+}
+.showtimes-label {
+    margin: 0 0 8px;
+    font-weight: 600;
+    font-size: .95rem;
+}
+@media (max-width: 600px) {
+    .modal-body { flex-direction: column; }
+    .modal-poster-img { width: 100%; min-width: unset; }
+}
+
+/* Bevestigingspagina — knoppen netjes onder elkaar */
+.confirm-actions {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    margin-top: 1.25rem;
+    align-items: flex-start;
+}
+.btn-ticket-secondary {
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+}
+.btn-ticket-secondary:hover {
+    background: var(--gold);
+    color: #081428;
+}

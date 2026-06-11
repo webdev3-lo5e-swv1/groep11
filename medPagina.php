@@ -24,7 +24,7 @@ if (
 include_once('./include/header.php')
 ?>
 <?php
-require_once './include/Movie.php';
+require_once './include/movie.php';
 
 $success = false;
 $errors  = [];
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     };
 
     if (empty($errors)) {
-        $movie = new Movie($title, $posterPath, $posterAlt, $ageRating, $genre, $duration, $year, $description);
+        $movie = new Movie($title, null, $posterPath, $posterAlt, $ageRating, $genre, $duration, $year, $description);
         $id    = $movie->save($conn);
 
         if ($id !== false) {

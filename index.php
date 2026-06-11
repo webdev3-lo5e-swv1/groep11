@@ -1,10 +1,19 @@
 <?php
 include_once('./include/connect.php');
-if ($DBerr == true){
-  header('location: databaseError.php');
+if ($DBerr == true) {
+    header('location: databaseError.php');
+    exit;
 }
-
 session_start();
+
+require_once('./include/movie.php');
+
+// Haal alle films op
+$movies = Movie::getAll($conn);
+
+// Filter genres voor dropdown
+$genres = array_unique(array_filter(array_map(fn($m) => $m->genre, $movies)));
+sort($genres);
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -17,11 +26,9 @@ session_start();
 </head>
 <body>
 
-<?php
-include_once('./include/header.php');
-?>
- 
-<!-- top movie -->
+<?php include_once('./include/header.php'); ?>
+
+<!-- top movie (featured) -->
 <section class="movie-hero">
   <article class="movie-inner">
     <figure class="poster">
@@ -34,10 +41,10 @@ include_once('./include/header.php');
       <ul class="movie-meta">
         <li><span class="badge age">16+</span></li>
         <li><span class="badge">Horror</span></li>
-        <li><span class="badge">1u 54m</span></li>
+        <li><span class="badge">1u 44m</span></li>
         <li><span class="badge">2025</span></li>
       </ul>
-      <p class="description">Een nieuwe beveiliger begint zijn eerste nacht in Freddy Fazbear's Pizza, waar de animatronics vrijer ronddwalen dan ooit tevoren. Overleven is geen optie — het is een verplichting.</p>
+      <p class="description">Een nieuwe beveiliger begint zijn eerste nacht in Freddy Fazbear's Pizza, waar de animatronics vrijer ronddwalen dan ooit tevoren.</p>
     </section>
   </article>
 </section>
@@ -47,22 +54,23 @@ include_once('./include/header.php');
     koop ticket
   </button>
 </section>
- 
+
 <section class="showtimes" id="showtimes">
-  <time class="showtime-date">Vandaag — 18 mei 2026</time>
+  <time class="showtime-date">Vandaag</time>
   <ul class="times-grid">
-    <li><button class="time-btn">13:15</button></li>
-    <li><button class="time-btn">15:45</button></li>
-    <li><button class="time-btn">18:00</button></li>
-    <li><button class="time-btn">20:30</button></li>
-    <li><button class="time-btn">22:50</button></li>
+    <li><button class="time-btn" onclick="goToReserve('five nights at freddy\'s 2','13:15')">13:15</button></li>
+    <li><button class="time-btn" onclick="goToReserve('five nights at freddy\'s 2','15:45')">15:45</button></li>
+    <li><button class="time-btn" onclick="goToReserve('five nights at freddy\'s 2','18:00')">18:00</button></li>
+    <li><button class="time-btn" onclick="goToReserve('five nights at freddy\'s 2','20:30')">20:30</button></li>
+    <li><button class="time-btn" onclick="goToReserve('five nights at freddy\'s 2','22:50')">22:50</button></li>
   </ul>
 </section>
- 
+
 <hr class="divider">
- 
-<!-- locations -->
-<section class="locations-section">
+
+<!-- Filters -->
+<section class="filter-bar">
+  <!-- Locaties dropdown -->
   <div class="locations-bar" id="locationsBar">
     <span class="locations-label" id="locationsLabel">locaties</span>
     <button class="locations-arrow-btn" id="locationsArrow" aria-label="Kies locatie">›</button>
@@ -75,69 +83,73 @@ include_once('./include/header.php');
       <li class="dropdown-option" data-value="utrecht">Utrecht</li>
     </ul>
   </div>
- 
-  <!-- movies list -->
-<?php
-require_once('./include/movie.php');
-$movies = Movie::getAll($conn);
-?>
 
-<ul class="movies-scroll">
-    <?php 
-    foreach ($movies as $movie): 
-    ?>
+  <!-- Genre filter -->
+  <div class="genre-bar">
+    <label for="genreSelect">Genre:</label>
+    <select id="genreSelect">
+      <option value="">Alle genres</option>
+      <?php foreach ($genres as $g): ?>
+      <option value="<?= htmlspecialchars($g) ?>"><?= htmlspecialchars($g) ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+
+  <!-- Zoekbalk (klanten) -->
+  <div class="search-bar-wrap">
+    <input type="text" id="movieSearchHome" placeholder="Film zoeken...">
+  </div>
+</section>
+
+<!-- movies list -->
+<section class="locations-section">
+<ul class="movies-scroll" id="movieGrid">
+    <?php foreach ($movies as $movie): ?>
     <li class="movie-card"
-    data-title="<?= htmlspecialchars($movie->title) ?>"
-    data-poster="<?= htmlspecialchars($movie->posterPath ?? '') ?>"
-    data-age="<?= htmlspecialchars($movie->ageRating ?? '') ?>"
-    data-genre="<?= htmlspecialchars($movie->genre ?? '') ?>"
-    data-duration="<?= htmlspecialchars($movie->duration ?? '') ?>"
-    data-year="<?= htmlspecialchars($movie->year ?? '') ?>"
-    data-description="<?= htmlspecialchars($movie->description ?? '') ?>">
+        data-title="<?= htmlspecialchars($movie->title) ?>"
+        data-poster="<?= htmlspecialchars($movie->posterPath ?? '') ?>"
+        data-age="<?= htmlspecialchars($movie->ageRating ?? '') ?>"
+        data-genre="<?= htmlspecialchars($movie->genre ?? '') ?>"
+        data-duration="<?= htmlspecialchars($movie->duration ?? '') ?>"
+        data-year="<?= htmlspecialchars($movie->year ?? '') ?>"
+        data-description="<?= htmlspecialchars($movie->description ?? '') ?>">
         <figure class="movie-card-thumb">
-            <img
-                src="<?= htmlspecialchars($movie->posterPath ?? '') ?>"
-                alt="<?= htmlspecialchars($movie->posterAlt ?? $movie->title) ?>"
-                onerror="this.src='./images/placeholder.png';"
-            >
+            <img src="<?= htmlspecialchars($movie->posterPath ?? '') ?>"
+                 alt="<?= htmlspecialchars($movie->posterAlt ?? $movie->title) ?>"
+                 onerror="this.src='./images/placeholder.png';">
         </figure>
         <h2 class="movie-card-title"><?= htmlspecialchars($movie->title) ?></h2>
     </li>
     <?php endforeach; ?>
 </ul>
- 
+</section>
+
 <div class="divider"></div>
-  
-  <div id="movieModal" class="movie-modal">
-      <div class="movie-modal-content">
 
-          <button id="closeModal">✖</button>
+<!-- Film modal -->
+<div id="movieModal" class="movie-modal">
+    <div class="movie-modal-content">
+        <button id="closeModal" aria-label="Sluiten">✖</button>
+        <div class="modal-body">
+            <img id="modalPoster" src="" alt="" class="modal-poster-img">
+            <div class="modal-info">
+                <h2 id="modalTitle"></h2>
+                <div id="modalMeta"></div>
+                <p id="modalDescription"></p>
+                <button id="showTicketsBtn">Ticket boeken</button>
+                <div id="modalShowtimes" style="display:none;">
+                    <p class="showtimes-label">Kies een tijdstip:</p>
+                    <button class="time-btn modal-time" data-time="13:15">13:15</button>
+                    <button class="time-btn modal-time" data-time="15:45">15:45</button>
+                    <button class="time-btn modal-time" data-time="18:00">18:00</button>
+                    <button class="time-btn modal-time" data-time="20:30">20:30</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-          <img id="modalPoster" src="" alt="">
-
-          <h2 id="modalTitle"></h2>
-
-          <p id="modalDescription"></p>
-
-          <div id="modalMeta"></div>
-
-          <button id="showTicketsBtn">
-              Ticket boeken
-          </button>
-
-          <div id="modalShowtimes" style="display:none;">
-              <button class="time-btn">13:15</button>
-              <button class="time-btn">15:45</button>
-              <button class="time-btn">18:00</button>
-              <button class="time-btn">20:30</button>
-          </div>
-
-      </div>
-  </div>
-<?php
-include_once('./include/footer.php');
-?>
-
+<?php include_once('./include/footer.php'); ?>
 <script src='./src/app.js' defer></script>
 </body>
 </html>
